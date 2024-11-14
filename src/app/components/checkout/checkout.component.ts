@@ -198,7 +198,7 @@ export class CheckoutComponent implements OnInit {
       this.cartService.clearCart();
       this.modal.showModal("Pedido realizado com sucesso!");
     } else {
-      this.checkoutForm.markAllAsTouched(); // Marca todos os campos como tocados para mostrar os erros
+      this.checkoutForm.markAllAsTouched();
     }
   }
 
