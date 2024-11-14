@@ -3,21 +3,33 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
-import { AddToCartModalComponent } from '../shared/add-to-cart-modal/add-to-cart-modal.component';
+import { AddToCartModalComponent } from '../shared/add-to-cart-modal.component';
+import { CustomButtonComponent } from '../shared/custom-button.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-details',
   standalone: true,
-  imports: [CommonModule, AddToCartModalComponent],
+  imports: [CommonModule, AddToCartModalComponent, CustomButtonComponent],
   template: `
-    <div *ngIf="product">
-      <h2>{{ product.title }}</h2>
-      <img [src]="product.image" alt="{{ product.title }}" />
-      <p>{{ product.description }}</p>
-      <p>Category: {{ product.category }}</p>
-      <p>Price: {{ product.price | currency }}</p>
-      <button mat-button color="primary" (click)="addToCart()">Adicionar ao Carrinho</button>
+    <div *ngIf="product" class="product-details-container">
+      <div class="image-container">
+        <img [src]="product.image" alt="{{ product.title }}" />
+      </div>
+      <div class="details-container">
+        <h2>{{ product.title }}</h2>
+        <p>Category: {{ product.category }}</p>
+        <p>{{ product.description }}</p>
+        <p class="price">Price: {{ product.price | currency }}</p>
+
+        <!-- Botão personalizado -->
+        <app-custom-button
+          label="Adicionar ao Carrinho"
+          backgroundColor="#28a745"
+          size="14px"
+          (click)="addToCart()"
+        ></app-custom-button>
+      </div>
     </div>
     <div *ngIf="!product">Loading product details...</div>
 
@@ -26,16 +38,43 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [
     `
-      div {
-        max-width: 600px;
+      .product-details-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 24px;
+        max-width: 800px;
         margin: auto;
-        text-align: center;
+        padding: 16px;
       }
 
-      img {
-        max-width: 100%;
+      .image-container {
+        flex: 1;
+        max-width: 300px;
+      }
+
+      .image-container img {
+        width: 100%;
         height: auto;
-        margin-bottom: 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .details-container {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .details-container h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .price {
+        font-weight: bold;
+        font-size: 18px;
+        color: #333;
       }
     `,
   ],
@@ -48,7 +87,7 @@ export class ProductDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
-    private cartService: CartService 
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {

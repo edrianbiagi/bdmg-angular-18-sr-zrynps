@@ -4,12 +4,13 @@ import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service'; 
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { AddToCartModalComponent } from '../shared/add-to-cart-modal/add-to-cart-modal.component';
+import { AddToCartModalComponent } from '../shared/add-to-cart-modal.component';
+import { CustomButtonComponent } from '../shared/custom-button.component';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, AddToCartModalComponent],
+  imports: [CommonModule, RouterModule, AddToCartModalComponent, CustomButtonComponent],
   template: `
     <div class="product-list">
       <div *ngIf="products.length === 0">Loading products...</div>
@@ -21,7 +22,13 @@ import { AddToCartModalComponent } from '../shared/add-to-cart-modal/add-to-cart
           </a>
           <p>{{ product.description }}</p>
           <p>Price: {{ product.price | currency }}</p>
-          <button mat-button color="primary" (click)="addToCart(product)">Adicionar ao Carrinho</button>
+          <!-- Botão personalizado -->
+          <app-custom-button
+            label="Adicionar ao Carrinho"
+            backgroundColor="#28a745"
+            size="14px"
+            (click)="addToCart(product)"
+          ></app-custom-button>
         </div>
       </div>
     </div>
