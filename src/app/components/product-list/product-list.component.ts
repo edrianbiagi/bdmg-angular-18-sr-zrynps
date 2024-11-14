@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service'; 
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; 
+import { RouterModule } from '@angular/router';
+import { AddToCartModalComponent } from '../shared/add-to-cart-modal/add-to-cart-modal.component';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, AddToCartModalComponent],
   template: `
     <div class="product-list">
       <div *ngIf="products.length === 0">Loading products...</div>
@@ -20,10 +21,13 @@ import { RouterModule } from '@angular/router';
           </a>
           <p>{{ product.description }}</p>
           <p>Price: {{ product.price | currency }}</p>
-          <button mat-button color="primary" (click)="addToCart(product)">Add to Cart</button>
+          <button mat-button color="primary" (click)="addToCart(product)">Adicionar ao Carrinho</button>
         </div>
       </div>
     </div>
+
+    <!-- Modal Reutilizável -->
+    <app-add-to-cart-modal #modal></app-add-to-cart-modal>
   `,
   styles: [
     `
@@ -58,8 +62,12 @@ import { RouterModule } from '@angular/router';
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
 
-  constructor(private productService: ProductService,
-    private cartService: CartService 
+  // Referência ao modal usando ViewChild
+  @ViewChild('modal') modal!: AddToCartModalComponent;
+
+  constructor(
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +75,9 @@ export class ProductListComponent implements OnInit {
       this.products = data;
     });
   }
+
   addToCart(product: Product): void {
-    this.cartService.addToCart(product); 
+    this.cartService.addToCart(product);
+    this.modal.showModal(`${product.title} foi adicionado ao carrinho!`);
   }
 }
